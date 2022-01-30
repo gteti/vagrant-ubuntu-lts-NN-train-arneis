@@ -14,6 +14,8 @@ Vagrant.configure("2") do |config|
   # boxes at https://vagrantcloud.com/search.
   config.vm.box = "nitindas/ubuntu-18"
 
+  config.vbguest.auto_update = true
+  
   # Disable automatic box update checking. If you disable this, then
   # boxes will only be checked for updates when the user runs
   # `vagrant box outdated`. This is not recommended.
@@ -38,7 +40,10 @@ Vagrant.configure("2") do |config|
   # Bridged networks make the machine appear as another physical device on
   # your network.
   # config.vm.network "public_network"
-  config.vm.network "forwarded_port", guest: 22, host: 2225
+  unique_hostport = 2225
+  config.vm.network "forwarded_port", guest: 22, host: unique_hostport, host_ip: "127.0.0.1", id: "ssh"
+  config.ssh.host = "localhost"
+  config.ssh.port = unique_hostport
 
   # Share an additional folder to the guest VM. The first argument is
   # the path on the host to the actual folder. The second argument is
@@ -64,7 +69,9 @@ Vagrant.configure("2") do |config|
     # Customize the amount of memory on the VM:
     vb.memory = "8192"
   end
-  #
+  
+  config.vm.disk :disk, size: "40GB", primary: true
+
   # View the documentation for the provider you are using for more
   # information on available options.
 
@@ -81,7 +88,9 @@ Vagrant.configure("2") do |config|
     
     setxkbmap it
     sed -i 's/XKBLAYOUT=\"\w*"/XKBLAYOUT=\"fr\"/g' /etc/default/keyboard
-
+    
+    echo -e "\n\n Starting main commands!"
+    adduser $USER vboxsf
     apt-get update
     apt install git curl
     cd Desktop
