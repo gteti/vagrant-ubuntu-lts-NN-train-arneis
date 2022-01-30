@@ -92,7 +92,7 @@ Vagrant.configure("2") do |config|
     echo -e "\n\n Starting main commands!"
     adduser $USER vboxsf
     apt-get update
-    apt install git curl
+    apt install git curl libcurl4
     cd Desktop
     mkdir Python
     cd Python
