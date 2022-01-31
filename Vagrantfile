@@ -15,7 +15,7 @@ Vagrant.configure("2") do |config|
   config.vm.box = "nitindas/ubuntu-18"
 
   config.vbguest.auto_update = true
-  
+
   # Disable automatic box update checking. If you disable this, then
   # boxes will only be checked for updates when the user runs
   # `vagrant box outdated`. This is not recommended.
@@ -91,9 +91,12 @@ Vagrant.configure("2") do |config|
     
     echo -e "\n\n Starting main commands!"
     adduser $USER vboxsf
-    apt-get update
-    apt install git curl libcurl4
-    cd Desktop
+    sudo apt-get update
+    
+    sudo apt install gnome-control-center
+    
+    sudo apt install git curl libcurl4
+    #cd ~/Desktop
     mkdir Python
     cd Python
     mkdir tmp
@@ -101,18 +104,45 @@ Vagrant.configure("2") do |config|
     echo -e "\n\nDownloading Anaconda installer. This may take sometime."
     curl -O https://repo.anaconda.com/archive/Anaconda3-2021.11-Linux-x86_64.sh
     echo -e "\n\n Download finished. Starting installation!"
-    bash https://repo.anaconda.com/archive/Anaconda3-2021.11-Linux-x86_64.sh -b -p /home/vagrant/anaconda3
-
-
+    bash Anaconda3-2021.11-Linux-x86_64.sh -b -p /home/vagrant/anaconda3
     
     export PATH="/home/vagrant/anaconda3/bin:$PATH"
     echo 'export PATH="/home/vagrant/anaconda3/bin:$PATH"' >> /home/vagrant/.bashrc
+    
+    conda init bash
 
-    echo -e "\n\n Creating environment and installing major libraries"
+    echo -e "\n\n Creating environment and installing major libraries\n"
     conda create --name trainenv python=3.7
+
+    echo -e "\n\n Activating trainenv environment\n"
     conda activate trainenv
-    conda install -y numpy=1.17.5 pandas jupyter tensorflow=1.15.0 tf_slim
-  #   apt-get install -y apache2
+
+    conda install -c anaconda scipy
+    conda install -c conda-forge pandas ipykernel
+    pip install numpy==1.17.5 tensorflow==1.15.0 tf_slim jupyter Cython contextlib2 pillow lxml matplotlib pycocotools gdown
+    sudo apt-get update && sudo apt-get install -y -qq protobuf-compiler python-pil python-lxml python-tk
+
+    echo -e "\n\n Installing OpenVINO\n"
+    sudo apt-get install -y pciutils cpio
+
+    echo -e "\n\nInstalling VSCODE\n"
+    sudo snap install --classic code
+
+    echo -e "\n\nFINISHED\n"
+    #wget https://registrationcenter-download.intel.com/akdlm/irc_nas/17662/l_openvino_toolkit_p_2021.3.394.tgz
+    #
+    #tar xf l_openvino_toolkit_p_2021.3.394.tgz
+    #cd l_openvino_toolkit_p_2021.3.394
+    #echo -e "\n\ninstall_openvino_dependencies\n"
+    #./install_openvino_dependencies.sh && \
+    #    sed -i 's/decline/accept/g' silent.cfg && \
+    #    ./install.sh --silent silent.cfg
+    #
+    #echo -e "\n\nsetupvars and demo_squeezenet_download_convert_run\n"    
+    #source /opt/intel/openvino_2021.2.394/bin/setupvars.sh && \
+    #    /opt/intel/openvino_2021.2.394/deployment_tools/demo/demo_squeezenet_download_convert_run.sh
+
+    #   apt-get install -y apache2
   SHELL
   end
 end
