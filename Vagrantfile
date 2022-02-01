@@ -110,20 +110,22 @@ Vagrant.configure("2") do |config|
     export PATH="/home/vagrant/anaconda3/bin:$PATH"
     echo 'export PATH="/home/vagrant/anaconda3/bin:$PATH"' >> /home/vagrant/.bashrc
     sudo chown -R $USER:$USER /home/vagrant/anaconda3
-    
+
     conda init bash
 
     echo -e "\n\n Creating environment and installing major libraries\n"
-    conda create --name trainenv python=3.7
+    conda create --name trainenv python=3.6
 
     echo -e "\n\n Activating trainenv environment\n"
     conda activate trainenv
 
     conda install -c anaconda scipy
     conda install -c conda-forge pandas ipykernel
-    pip install numpy==1.17.5 tensorflow==1.15.0
+    pip install numpy==1.17.5 
+    pip install tensorflow==1.15.0
     pip install jupyter 
     pip install tf_slim Cython contextlib2 pillow lxml matplotlib pycocotools gdown
+    pip install google-api-python-client
     sudo apt-get update && sudo apt-get install -y -qq protobuf-compiler python-pil python-lxml python-tk
 
     echo -e "\n\n Installing OpenVINO\n"
