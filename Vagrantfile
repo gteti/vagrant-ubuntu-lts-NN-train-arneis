@@ -80,17 +80,18 @@ Vagrant.configure("2") do |config|
   # documentation for more information about their specific syntax and use.
   
   config.vm.provision "shell" do |s| #, inline: <<-SHELL
-    ssh_pub_key = File.readlines("C:/Users/Mio/.ssh/id_rsa.pub").first.strip
+    ssh_pub_key = File.readlines("C:/Users/teti/.ssh/id_rsa_azure.pub").first.strip
     
     s.inline = <<-SHELL
     echo #{ssh_pub_key} >> /home/vagrant/.ssh/authorized_keys
     echo #{ssh_pub_key} >> /root/.ssh/authorized_keys
     
     setxkbmap it
-    sed -i 's/XKBLAYOUT=\"\w*"/XKBLAYOUT=\"fr\"/g' /etc/default/keyboard
+    sed -i 's/XKBLAYOUT=\"\w*"/XKBLAYOUT=\"it\"/g' /etc/default/keyboard
     
     echo -e "\n\n Starting main commands!"
-    adduser $USER vboxsf
+    sudo adduser vagrant
+    sudo adduser $USER vboxsf
     sudo apt-get update
     
     sudo apt install gnome-control-center
@@ -108,6 +109,7 @@ Vagrant.configure("2") do |config|
     
     export PATH="/home/vagrant/anaconda3/bin:$PATH"
     echo 'export PATH="/home/vagrant/anaconda3/bin:$PATH"' >> /home/vagrant/.bashrc
+    sudo chown -R $USER:$USER /home/vagrant/anaconda3
     
     conda init bash
 
@@ -119,7 +121,9 @@ Vagrant.configure("2") do |config|
 
     conda install -c anaconda scipy
     conda install -c conda-forge pandas ipykernel
-    pip install numpy==1.17.5 tensorflow==1.15.0 tf_slim jupyter Cython contextlib2 pillow lxml matplotlib pycocotools gdown
+    pip install numpy==1.17.5 tensorflow==1.15.0
+    pip install jupyter 
+    pip install tf_slim Cython contextlib2 pillow lxml matplotlib pycocotools gdown
     sudo apt-get update && sudo apt-get install -y -qq protobuf-compiler python-pil python-lxml python-tk
 
     echo -e "\n\n Installing OpenVINO\n"
